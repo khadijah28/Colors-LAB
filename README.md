@@ -9,7 +9,7 @@ This project is a basic web app where users can log in, store their favorite col
 - **PHP** handles API requests, and **MySQL** stores all user and color data.
 
 ## Getting Started
-1. Provision a web server with a LAMP setup (we used DigitalOcean).
+1. Provision a web server with a LAMP setup ( used DigitalOcean).
 2. Set up a MySQL database containing a Users table and a Colors table.
 3. Store your database connection details as environment variables.
 4. Upload all project files (PHP APIs, HTML pages, CSS stylesheets, JS scripts, and images) to your server's web root.
