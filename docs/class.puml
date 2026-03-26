@@ -1,0 +1,102 @@
+@startuml class
+
+skinparam class {
+  BackgroundColor LightYellow
+  BorderColor DarkSlateGray
+  ArrowColor DarkSlateGray
+  HeaderBackgroundColor LightSteelBlue
+}
+skinparam shadowing false
+skinparam defaultFontName Arial
+
+package "Frontend (HTML + JavaScript)" #EEEEEE {
+
+  class LoginPage {
+    - loginName : string
+    - loginPassword : string
+    --
+    + doLogin() : void
+  }
+
+  class ColorPage {
+    - searchText : string
+    - colorText : string
+    - userName : string
+    --
+    + readCookie() : void
+    + doLogout() : void
+    + addColor() : void
+    + searchColor() : void
+  }
+
+  class MD5Util {
+    + md5(input : string) : string
+  }
+
+  class CookieManager {
+    + setCookie(name : string, value : string, days : int) : void
+    + getCookie(name : string) : string
+    + deleteCookie(name : string) : void
+  }
+}
+
+package "Backend (PHP APIs)" #DDEEFF {
+
+  class LoginAPI {
+    - db : Database
+    --
+    + handleRequest(login : string, password : string) : JSON
+    - queryUser(login : string, password : string) : User
+  }
+
+  class AddColorAPI {
+    - db : Database
+    --
+    + handleRequest(userId : int, colorName : string) : JSON
+    - insertColor(userId : int, colorName : string) : bool
+  }
+
+  class SearchColorAPI {
+    - db : Database
+    --
+    + handleRequest(userId : int, searchTerm : string) : JSON
+    - queryColors(userId : int, searchTerm : string) : Color[]
+  }
+}
+
+package "Database (MySQL)" #EEFFEE {
+
+  class Users {
+    + id : int <<PK>>
+    + login : string
+    + password : string
+    + firstName : string
+    + lastName : string
+  }
+
+  class Colors {
+    + id : int <<PK>>
+    + userId : int <<FK>>
+    + colorName : string
+  }
+}
+
+' Frontend relationships
+LoginPage --> MD5Util : uses
+LoginPage --> CookieManager : writes cookie
+ColorPage --> CookieManager : reads / deletes cookie
+
+' Frontend to Backend (HTTP API calls)
+LoginPage ..> LoginAPI : POST /api/login.php
+ColorPage ..> AddColorAPI : POST /api/addcolor.php
+ColorPage ..> SearchColorAPI : POST /api/searchcolor.php
+
+' Backend to Database
+LoginAPI --> Users : queries
+AddColorAPI --> Colors : inserts
+SearchColorAPI --> Colors : queries
+
+' Database relationships
+Users "1" --o "0..*" Colors : has
+
+@enduml

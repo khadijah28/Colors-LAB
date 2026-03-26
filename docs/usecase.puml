@@ -1,0 +1,46 @@
+@startuml usecase
+
+skinparam usecase {
+  BackgroundColor LightYellow
+  BorderColor DarkSlateGray
+  ArrowColor DarkSlateGray
+  ActorBorderColor DarkSlateGray
+  ActorBackgroundColor LightBlue
+}
+skinparam rectangle {
+  BorderColor DarkSlateGray
+}
+skinparam shadowing false
+skinparam defaultFontName Arial
+
+left to right direction
+
+actor "Guest\n(Unauthenticated User)" as Guest
+actor "Registered User\n(Authenticated)" as User
+
+rectangle "Colors Web Application" {
+  usecase "Log In" as UC1
+  usecase "Hash Password (MD5)" as UC2
+  usecase "Validate Credentials\n(via PHP API)" as UC3
+  usecase "Store Session\n(Cookie)" as UC4
+  usecase "Log Out" as UC5
+  usecase "Clear Session Cookie" as UC6
+  usecase "Add Color" as UC7
+  usecase "Search Color" as UC8
+  usecase "View Color Results" as UC9
+}
+
+Guest --> UC1
+
+UC1 ..> UC2 : <<include>>
+UC1 ..> UC3 : <<include>>
+UC1 ..> UC4 : <<extend>>\n[on success]
+
+User --> UC5
+User --> UC7
+User --> UC8
+
+UC5 ..> UC6 : <<include>>
+UC8 ..> UC9 : <<include>>
+
+@enduml

@@ -1,0 +1,71 @@
+@startuml activity
+
+skinparam activity {
+  BackgroundColor LightYellow
+  BorderColor DarkSlateGray
+  ArrowColor DarkSlateGray
+  StartColor DarkSlateGray
+  EndColor DarkSlateGray
+  DiamondBackgroundColor LightBlue
+  DiamondBorderColor DarkSlateGray
+}
+skinparam shadowing false
+skinparam defaultFontName Arial
+
+start
+
+:User opens index.html (Login Page);
+
+:Enter Username and Password;
+
+:Click "Do It" button\n(calls doLogin());
+
+:Hash password using MD5;
+
+:Send POST request to\nlogin.php API;
+
+if (Credentials valid?) then (yes)
+  :Receive userId and firstName\nfrom PHP/MySQL;
+  :Store userId and firstName\nin browser cookie;
+  :Redirect to color.html;
+
+  :color.html loads\n(DOMContentLoaded fires);
+  :Call readCookie()\nto restore session;
+
+  if (Cookie found?) then (yes)
+    :Display logged-in username;
+
+    fork
+      :User enters color\nand clicks "Add Color"\n(calls addColor());
+      :Send POST to addcolor.php\nwith userId + colorName;
+      if (Color added?) then (yes)
+        :Display success message;
+      else (no)
+        :Display error message;
+      endif
+    fork again
+      :User enters search term\nand clicks "Search Color"\n(calls searchColor());
+      :Send POST to searchcolor.php\nwith userId + search term;
+      if (Colors found?) then (yes)
+        :Display matching colors\nin colorList;
+      else (no)
+        :Display "no results" message;
+      endif
+    fork again
+      :User clicks "Log Out"\n(calls doLogout());
+      :Clear session cookie;
+      :Redirect to index.html;
+    end fork
+
+  else (no)
+    :Redirect to index.html\n(force re-login);
+  endif
+
+else (no)
+  :Display error message\non login page;
+  :User remains on index.html;
+endif
+
+stop
+
+@enduml
