@@ -13,5 +13,17 @@
     "no-constant-condition": "error",
     "eqeqeq": ["error", "always"],
     "no-var": "warn"
-  }
+  },
+  "overrides": [
+    {
+      "files": ["js/utils.js", "js/api.js"],
+      "env": {
+        "browser": false,
+        "node": true
+      },
+      "parserOptions": {
+        "sourceType": "script"
+      }
+    }
+  ]
 }
